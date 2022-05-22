@@ -26,11 +26,15 @@ from matplotlib import pyplot as plt
 
 #Stratégie 1:
 #Initialisation
-N=10 #number of patients
+N=6 #number of patients
 Pk=[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.48] #probability of each traitement
 K=len(Pk) #number or treatement used 
 Xt=[] #table of Xn
 for i in range (1,N+1):
     Tn=Stats.randint.rvs(1,K+1)  #Uniform law
     Xn=np.random.binomial(1,Pk[Tn-1])  #Bernoulli law
-    Xt.append(Xn)
+    Xt.append(Xn)  #list of effecacity{0,1} 
+    for j in range (1,K+1):
+        Nkn=[]
+        Nkn.append(np.random.binomial(j,Pk[Tn-1]))  #number of use of treatment
+
