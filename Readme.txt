@@ -41,7 +41,7 @@ Nkn = 0 ;
 On applique Tn sur le patient  n 
 On déduit Xn 
 Calcule de Nkn 
-	Nkn / n => p
+	NkN / N => pk'
 	esperance
 
 
@@ -52,7 +52,7 @@ Pk tableau
   
 
 
-10 perso pk =0.5   
-5 / 10 =>0. 5 
+10 = N = n  perso  
+5 / 10 =>0. 5 = p  
 
 
