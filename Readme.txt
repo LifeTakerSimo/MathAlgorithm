@@ -36,10 +36,10 @@ E(x)  = somme i p(X=i) => E(somme de Xn) = N * E(Xi) = N * (somme j P(Xi=j))
 Etape 4 : 
 Initialisation : voir etape 
 Boucle jusqu’à 1000= N 
-On choisit le traitement selon loi uniforme ( le choix sera stocke dans le retour T) 
+On choisit un traitement T selon loi uniforme ( le choix sera stocke dans le retour Tk) 
 Nkn = 0 ;
 On applique Tn sur le patient  n 
-On obtient Xn 
+On déduit Xn 
 Calcule de Nkn 
 	Nkn / n => p
 	esperance
