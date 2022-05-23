@@ -43,8 +43,9 @@ On déduit Xn
 Calcule de Nkn 
 	NkN / N => pk'
 	esperance
-
-
+il nous faut une liste pour chaque traitement et son utilisation sur N patients 
+etape pour trouver l effecaciter : 
+la liste des 0 / 1  =>  L1 /   la liste du nombre d'utilisation => L2
 
 
 Etape 5 

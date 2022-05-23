@@ -22,36 +22,63 @@ plt.title("Bernoulli Strategie 1 ")
 
 from ipaddress import NetmaskValueError
 from operator import index
+from re import A
 from scipy import stats as Stats
 import numpy as np
 from matplotlib import pyplot as plt
 
+
+
+#Most used element in a list        
+def most_frequent(List):
+    counter = 0
+    num = List[0]
+     
+    for i in List:
+        curr_frequency = List.count(i)
+        if(curr_frequency> counter):
+            counter = curr_frequency
+            num = i
+ 
+    return num
+
+
 #Stratégie 1:
 #Initialisation
-N=15 #number of patients
+N=20 #number of patients
 Pk=[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.48] #probability of each traitement
 K=len(Pk) #number or treatement used
 pk=K*[0] #final probability of each treatment
 Xt=[] #table of Xn
+Tnn=[]
 Nkn=N*[K*[0]]
 LNkn=K*[0] #value of Nkn on n
 for i in range (1,N+1):
     Tn=Stats.randint.rvs(1,K+1)  #Uniform law
+    Tnn.append(Tn)
     print("Tn =",Tn)
     Xn=np.random.binomial(1,Pk[Tn-1])  #Bernoulli law
     Xt.append(Xn)  #list of efficiency{0,1} 
+    print(Xt)
     for j in range (1,K+1):
-
         LNkn[j-1]+= np.random.binomial(1,Pk[j-1]==Pk[Tn-1])  #number of use of all treatments on n
-   
     print("Nkn=",LNkn)
-
 for j in range(1,K+1):
     pk[j-1]=LNkn[j-1]/N
-
 Ex=np.mean(Xt)
+print(Xt)
+print(Tnn)
+Xmax=0
+L0=[]
+for i in range(len(Xt+1)): 
+    if(Xt[i]*Tnn[i]!=0): 
+        L0.append(Xt[i]*Tnn[i])
+print(most_frequent(L0))
 
-print(Ex)
+        
+
+
+
 
 
 
