@@ -40,10 +40,10 @@ def numberOfUse(L):
         else:
             occurrences[i] = 1
 # Printing dictionary
-    print("element count using dictionary",occurrences)
+    return(occurrences)
 # Printing all element with its count of Occurrence
-    for key,value in occurrences.items():
-        print("The Occurrence of {0} in the list is: {1}".format(key, value))
+    #for key,value in occurrences.items():
+       # print("The Occurrence of {0} in the list is: {1}".format(key, value))
 
 #Most used element in a list        
 def most_frequent(List):
@@ -61,7 +61,7 @@ def most_frequent(List):
 
 #Stratégie 1:
 #Initialisation
-N=10 #number of patients
+N=20 #number of patients
 Pk=[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.75] #probability of each treatement
 K=len(Pk) #number or treatement used
 pk=K*[0] #final probability of each treatment
@@ -84,24 +84,13 @@ for j in range(1,K+1):
 #print(Xt)
 print(Tnn)
 TE=[] #efficiency of all treatment after use 
+Use=numberOfUse(Tnn).items()
+Eff=numberOfUse(TE).values()
 for i in range(N): 
-    if(Xt[i]*Tnn[i]!=0): 
         TE.append(Xt[i]*Tnn[i])
+        RatioUE=Eff[i]/Use[i]
 #print(most_frequent(L0))  
 Ex=np.mean(Xt)   
 #print("L'esperance de cette stratégie est : ", Ex)
 # graphe pour l'effcacite de chaque traitement 
-numberOfUse(Tnn)
-print(TE)
-
-
-        
-
-
-
-
-
-
-    
-
-
+print(RatioUE)

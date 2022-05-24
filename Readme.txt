@@ -47,6 +47,7 @@ Calcule de Nkn
 il nous faut une liste pour chaque traitement et son utilisation sur N patients 
 etape pour trouver l effecaciter : 
 la liste des 0 / 1  =>  L1 /   la liste du nombre d'utilisation => L2
+graphe de nombre d'utilisation et nombre d effacite 
 
 
 Etape 5 
