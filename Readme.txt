@@ -32,6 +32,7 @@ Somme de NkN(k) =1000 (à vérifier )
 Etape 3 : Calcule Théorique 
 Il faut maximser E[somme de Xn] 
 E(x)  = somme i p(X=i) => E(somme de Xn) = N * E(Xi) = N * (somme j P(Xi=j))
+E()
  Alors la quantité (1) dépend de la probabilité du traitement et le nombre N
 Etape 4 : 
 Initialisation : voir etape 

@@ -28,6 +28,22 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 
+# Count the number of use of each element 
+def numberOfUse(L):
+# define empty dictionary
+    occurrences = {}
+# Checking the element from sample list present as key in dictionary
+# if yes than increment by 1 or create new key with value 1
+    for i in L:
+        if i in occurrences:
+            occurrences[i] += 1
+        else:
+            occurrences[i] = 1
+# Printing dictionary
+    print("element count using dictionary",occurrences)
+# Printing all element with its count of Occurrence
+    for key,value in occurrences.items():
+        print("The Occurrence of {0} in the list is: {1}".format(key, value))
 
 #Most used element in a list        
 def most_frequent(List):
@@ -45,8 +61,8 @@ def most_frequent(List):
 
 #Stratégie 1:
 #Initialisation
-N=20 #number of patients
-Pk=[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.48] #probability of each traitement
+N=10 #number of patients
+Pk=[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.75] #probability of each treatement
 K=len(Pk) #number or treatement used
 pk=K*[0] #final probability of each treatment
 Xt=[] #table of Xn
@@ -56,24 +72,28 @@ LNkn=K*[0] #value of Nkn on n
 for i in range (1,N+1):
     Tn=Stats.randint.rvs(1,K+1)  #Uniform law
     Tnn.append(Tn)
-    print("Tn =",Tn)
+    #print("Tn =",Tn)
     Xn=np.random.binomial(1,Pk[Tn-1])  #Bernoulli law
     Xt.append(Xn)  #list of efficiency{0,1} 
-    print(Xt)
+    #print(Xt)
     for j in range (1,K+1):
         LNkn[j-1]+= np.random.binomial(1,Pk[j-1]==Pk[Tn-1])  #number of use of all treatments on n
-    print("Nkn=",LNkn)
+    #print("Nkn=",LNkn)
 for j in range(1,K+1):
     pk[j-1]=LNkn[j-1]/N
-Ex=np.mean(Xt)
-print(Xt)
+#print(Xt)
 print(Tnn)
-Xmax=0
-L0=[]
-for i in range(len(Xt+1)): 
+TE=[] #efficiency of all treatment after use 
+for i in range(N): 
     if(Xt[i]*Tnn[i]!=0): 
-        L0.append(Xt[i]*Tnn[i])
-print(most_frequent(L0))
+        TE.append(Xt[i]*Tnn[i])
+#print(most_frequent(L0))  
+Ex=np.mean(Xt)   
+#print("L'esperance de cette stratégie est : ", Ex)
+# graphe pour l'effcacite de chaque traitement 
+numberOfUse(Tnn)
+print(TE)
+
 
         
 
