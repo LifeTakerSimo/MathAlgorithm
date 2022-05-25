@@ -20,9 +20,6 @@ plt.title("Bernoulli Strategie 1 ")
 #ax.set(xlabel='Loi de bernoulli' , ylabel='Frequency')
 """
 
-from ipaddress import NetmaskValueError
-from operator import index
-from re import A
 from scipy import stats as Stats
 import numpy as np
 from matplotlib import pyplot as plt
@@ -74,11 +71,21 @@ for i in range (1,N+1):
     for j in range (1,K+1):
         Nkn[j-1]+= np.random.binomial(1,Pk[j-1]==Pk[Tn-1])  #number of use of all treatments on n
 TE=[] #efficiency of all treatment after use 
+<<<<<<< HEAD
 Use=numberOfUse(Tpn)
 Eff=numberOfUse(TE)
 for i in range(N): 
         TE.append(Xt[i]*Tpn[i])
         RatioUE=Eff[i]/Use[i]
+=======
+Use=numberOfUse(Tnn)
+for i in range(N):
+    TE.append(Xt[i]*Tnn[i])
+Eff=list(numberOfUse(TE).values())
+Use=list(numberOfUse(Tnn).values())
+ratio=[round(i / j,2) for i, j in zip(Use, Eff)]
+print(ratio)
+>>>>>>> fe46dc9e1396b8b2b545048a8d61499c4075d20d
 Ex=np.mean(Xt)   
 #print("L'esperance de cette stratégie est : ", Ex)
 # graphe pour l'effcacite de chaque traitement 
