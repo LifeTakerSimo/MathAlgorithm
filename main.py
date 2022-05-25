@@ -56,7 +56,7 @@ def most_frequent(List):
 
 #Stratégie 1:
 #Initialisation
-N=20 #number of patients
+N=100 #number of patients
 Pk=[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.75] #probability of each treatement
 K=len(Pk) #number or treatement used
 Xt=[] #table of Xn
@@ -75,14 +75,22 @@ for i in range (1,N+1):
     for j in range (1,K+1):
         Nkn[j-1]+= np.random.binomial(1,Pk[j-1]==Pk[Tn-1])  #number of use of all treatments on n
 TE=[] #efficiency of all treatment after use 
-Use=numberOfUse(Tnn)
 for i in range(N):
     TE.append(Xt[i]*Tnn[i])
 Eff=list(numberOfUse(TE).values())
 Use=list(numberOfUse(Tnn).values())
 ratio=[round(i / j,2) for i, j in zip(Use, Eff)]
+<<<<<<< HEAD
 print(Nkn)
 Ex=np.mean(Xt)   
+=======
+print(ratio)
+print(len(ratio))
+Ex=np.mean(Xt)
+
+
+
+>>>>>>> d8cd120e795664c10d9e216bc73324c1d965a411
 #print("L'esperance de cette stratégie est : ", Ex)
 #graphe pour l'effcacite de chaque traitement 
 #print(RatioUE)
