@@ -44,7 +44,7 @@ Xt=[] #table of Xn
 Tnn=[] #table of treatment given to each patient
 Nkn=K*[0] #value of Nkn at n
 Ykn= [[0 for i in range(K)] for i in range (N)] 
-"""
+
 #Treatment of strat 1 : 
 for i in range (1,N+1):
     Tn=Stats.randint.rvs(1,K+1)  #Uniform law
@@ -64,7 +64,12 @@ for i in Use.keys():
     if (not(i in Eff)):
         Eff[i]=0
     ratio.append(round(Eff[i]/Use[i],2))
-plt.bar(list(Eff.keys()),ratio,0.5)
+plt.bar(list(Eff.keys()),ratio,0.5,color='blue')
+plt.title("Graphe de l'efficacité par rapport à l'utilisation de chaque traitement",fontsize=15)
+plt.ylabel('Ratio')
+plt.xlabel('Traitement')
+plt.grid
+plt.show()
 Ex=np.mean(Xt)
 print(ratio)
 """
@@ -92,4 +97,4 @@ print(Ykn)
 #print(Tnn)
 #print(Xt)
 #print(Ykn)
-
+"""
