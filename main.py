@@ -60,22 +60,19 @@ N=20 #number of patients
 Pk=[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.75] #probability of each treatement
 K=len(Pk) #number or treatement used
 Xt=[] #table of Xn
-Tpn=[]
+Tnn=[]
 Nkn=K*[0] #value of Nkn at n
-#Treatment of strat 1 :
+
+
+#Treatment of strat 1 : 
 for i in range (1,N+1):
     Tn=Stats.randint.rvs(1,K+1)  #Uniform law
-    Tpn.append(Tn)
+    Tnn.append(Tn)
     Xn=np.random.binomial(1,Pk[Tn-1])  #Bernoulli law
     Xt.append(Xn)  #list of efficiency{0,1} 
     for j in range (1,K+1):
         Nkn[j-1]+= np.random.binomial(1,Pk[j-1]==Pk[Tn-1])  #number of use of all treatments on n
 TE=[] #efficiency of all treatment after use 
-Use=numberOfUse(Tpn)
-Eff=numberOfUse(TE)
-for i in range(N): 
-        TE.append(Xt[i]*Tpn[i])
-        RatioUE=Eff[i]/Use[i]
 Use=numberOfUse(Tnn)
 for i in range(N):
     TE.append(Xt[i]*Tnn[i])
@@ -83,7 +80,9 @@ Eff=list(numberOfUse(TE).values())
 Use=list(numberOfUse(Tnn).values())
 ratio=[round(i / j,2) for i, j in zip(Use, Eff)]
 print(ratio)
-Ex=np.mean(Xt)   
+Ex=np.mean(Xt)
+
+
 #print("L'esperance de cette stratégie est : ", Ex)
 # graphe pour l'effcacite de chaque traitement 
 #print(RatioUE)
