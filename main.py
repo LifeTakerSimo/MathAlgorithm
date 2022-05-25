@@ -37,14 +37,14 @@ def most_frequent(List):
 
 
 #Initialisation
-N=100 #number of patients
+N=1000 #number of patients
 Pk=[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.75] #probability of each treatement
 K=len(Pk) #number or treatement used
 Xt=[] #table of Xn
 Tnn=[] #table of treatment given to each patient
 Nkn=K*[0] #value of Nkn at n
-
-
+Ykn= [[0 for i in range(K)] for i in range (N)] 
+"""
 #Treatment of strat 1 : 
 for i in range (1,N+1):
     Tn=Stats.randint.rvs(1,K+1)  #Uniform law
@@ -69,6 +69,7 @@ Ex=np.mean(Xt)
 print(ratio)
 """
 #Treatment of strat 2 : 
+
 for i in range (1,N+1):
     if(i<K+1):    
         Tnn.append(i) 
@@ -83,10 +84,12 @@ for i in range (1,N+1):
 for i in range (1,N+1):
     for j in range (1,K+1):
         if(j==Tnn[i-1]):
-            Ykn[j-1][i-1]=Xt[i-1]
+            Ykn[i-1][j-1]=Xt[i-1]
             #print(Ykn)
-    print(Ykn)            
+print(len(Ykn))
+print(len(Ykn[0]))
+print(Ykn)            
 #print(Tnn)
 #print(Xt)
 #print(Ykn)
-"""
+
