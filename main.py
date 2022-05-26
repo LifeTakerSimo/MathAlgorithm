@@ -92,8 +92,8 @@ for i in range (1,N+1):
     for j in range (1,K+1):
         if(j==Tnn):
             PPkn[j-1]+= np.random.binomial(1,Pk[j-1])
-    print(PPkn)
-    NknS2.insert(i-1,PPkn)
+    #print(PPkn)
+    NknS2.insert(i-1,PPkn.copy())
     
 for i in range (1,N+1):
     for j in range (1,K+1):
