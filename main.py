@@ -76,6 +76,7 @@ print(ratio)
 """
 #Treatment of strat 2 : 
 PknS2=[[0 for i in range(N)] for i in range (K)] 
+PPkn=[0 for i in range (K)]
 for i in range (1,N+1):
     if(i<K+1):  
         Tn=i  
@@ -89,6 +90,7 @@ for i in range (1,N+1):
         Xn=np.random.binomial(1,Pk[Tn-1])  #Bernoulli law
         Xt.append(Xn)  #list of efficiency{0,1}
     for j in range (1,K+1):
+        
         NknS2[i-1][j-1]+= np.random.binomial(1,Pk[j-1]==Pk[Tn-1])
 for i in range (1,N+1):
     for j in range (1,K+1):
