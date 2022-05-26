@@ -37,29 +37,29 @@ def most_frequent(List):
 
 
 #Initialisation
-N=100 #number of patients
+N=15 #number of patients
 Pk=[0.9,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.75] #probability of each treatement
 K=len(Pk) #number or treatement used
 Xt=[] #table of Xn
-Tnn=[] #table of treatment given to each patient
+Tn=[] #table of treatment given to each patient
 Nkn=K*[0] #value of Nkn at n
-NknS2=[[0 for i in range(K)] for i in range (N)] 
+NknS2=[0 for i in range (N)] 
 Ykn= [[0 for i in range(K)] for i in range (N)] 
 """
 #Treatment of strat 1 : 
 for i in range (1,N+1):
-    Tn=Stats.randint.rvs(1,K+1)  #Uniform law
-    Tnn.append(Tn)
-    Xn=np.random.binomial(1,Pk[Tn-1])  #Bernoulli law
+    Tnn=Stats.randint.rvs(1,K+1)  #Uniform law
+    Tn.append(Tnn)
+    Xn=np.random.binomial(1,Pk[Tnn-1])  #Bernoulli law
     Xt.append(Xn)  #list of efficiency{0,1} 
     for j in range (1,K+1):
-        Nkn[j-1]+= np.random.binomial(1,Pk[j-1]==Pk[Tn-1])  #number of use of all treatments on n
+        Nkn[j-1]+= np.random.binomial(1,Pk[j-1]==Pk[Tnn-1])  #number of use of all treatments on n
 TE=[] #efficiency of all treatment after use 
-Use=numberOfUse(Tnn)
+Use=numberOfUse(Tn)
 for i in range(N):
-    TE.append(Xt[i]*Tnn[i])
+    TE.append(Xt[i]*Tn[i])
 Eff=numberOfUse(TE)
-Use=numberOfUse(Tnn)
+Use=numberOfUse(Tn)
 ratio=[]
 for i in Use.keys():
     if (not(i in Eff)):
@@ -79,30 +79,33 @@ PknS2=[[0 for i in range(N)] for i in range (K)]
 PPkn=[0 for i in range (K)]
 for i in range (1,N+1):
     if(i<K+1):  
-        Tn=i  
-        Tnn.append(Tn) 
+        Tnn=i  
+        Tn.append(Tnn) 
         Xn=np.random.binomial(1,Pk[i-1])  #Bernoulli law
         Xt.append(Xn)  #list of efficiency{0,1}
         #print(Xt)
     else:
-        Tn=Stats.randint.rvs(1,K+1)  #Uniform law
-        Tnn.append(Tn)
-        Xn=np.random.binomial(1,Pk[Tn-1])  #Bernoulli law
+        Tnn=Stats.randint.rvs(1,K+1)  #Uniform law
+        Tn.append(Tnn)
+        Xn=np.random.binomial(1,Pk[Tnn-1])  #Bernoulli law
         Xt.append(Xn)  #list of efficiency{0,1}
     for j in range (1,K+1):
-        
-        NknS2[i-1][j-1]+= np.random.binomial(1,Pk[j-1]==Pk[Tn-1])
+        if(j==Tnn):
+            PPkn[j-1]+= np.random.binomial(1,Pk[j-1])
+    print(PPkn)
+    NknS2.insert(i-1,PPkn)
+    
 for i in range (1,N+1):
     for j in range (1,K+1):
-        if(j==Tnn[i-1]):
+        if(j==Tn[i-1]):
             Ykn[i-1][j-1]=Xt[i-1]
             #print(Ykn)
 print(NknS2)
 
-#Nkn[j-1]+= np.random.binomial(1,Pk[j-1]==Pk[Tn-1])  #number of use of all treatments on n
+#Nkn[j-1]+= np.random.binomial(1,Pk[j-1]==Pk[Tnn-1])  #number of use of all treatments on n
 #for i in range (1,N+1):
 #   for j in range (1,K+1):
-#       NknS2[i-1][j-1]+= np.random.binomial(1,Pk[j-1]==Pk[Tnn-1])  
+#       NknS2[i-1][j-1]+= np.random.binomial(1,Pk[j-1]==Pk[Tn-1])  
 
 #for i in range (K+1,N+1):
 #   for j in range (1,K+1):
