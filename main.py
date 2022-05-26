@@ -38,7 +38,7 @@ def most_frequent(List):
 
 
 #Initialisation
-N=1000 #number of patients
+N=5000 #number of patients
 Pk=[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.75] #probability of each treatement
 K=len(Pk) #number or treatement used
 Xt=[] #table of Xn
@@ -114,18 +114,20 @@ def Sum(L,k,n):
 
 
 for i in range (K+1,N+1):
-    
     for j in range (1,K+1):
         sum=Sum(Ykn,j-1,i-1)
         PknS2[i-1][j-1]=round(sum / NknS2[i-1][j-1],3)
-print(NknS2[N-1])
-print("==============================")
-print("==============================")
-print("==============================")
-
-print(PknS2[N-1])    
-
-
+numberOfMax=[0 for k in range(10)]
+for i in range (K+1,N+1):
+    for j in range(1,K+1):
+        if max(PknS2[i-1])==PknS2[i-1][j-1]:
+            numberOfMax[j-1]+=1
+plt.bar([i for i in range(1,11)],numberOfMax,0.5) 
+plt.title("",fontsize=15)
+plt.ylabel('Nombre de fois ou Pkn est maximal')
+plt.xlabel('Traitement')
+plt.grid()
+plt.show()
 
 
 #print(PknS2)
