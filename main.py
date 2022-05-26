@@ -1,3 +1,4 @@
+from logging.config import listen
 from scipy import stats as Stats
 import numpy as np
 from matplotlib import pyplot as plt
@@ -37,13 +38,13 @@ def most_frequent(List):
 
 
 #Initialisation
-N=15 #number of patients
-Pk=[0.9,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.75] #probability of each treatement
+N=1000 #number of patients
+Pk=[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.75] #probability of each treatement
 K=len(Pk) #number or treatement used
 Xt=[] #table of Xn
 Tn=[] #table of treatment given to each patient
 Nkn=K*[0] #value of Nkn at n
-NknS2=[0 for i in range (N)] 
+NknS2=[] 
 Ykn= [[0 for i in range(K)] for i in range (N)] 
 """
 #Treatment of strat 1 : 
@@ -75,7 +76,7 @@ Ex=np.mean(Xt)
 print(ratio)
 """
 #Treatment of strat 2 : 
-PknS2=[[0 for i in range(N)] for i in range (K)] 
+PknS2=[[0 for i in range(K)] for i in range (N)] 
 PPkn=[0 for i in range (K)]
 for i in range (1,N+1):
     if(i<K+1):  
@@ -91,22 +92,40 @@ for i in range (1,N+1):
         Xt.append(Xn)  #list of efficiency{0,1}
     for j in range (1,K+1):
         if(j==Tnn):
-            PPkn[j-1]+= np.random.binomial(1,Pk[j-1])
+            PPkn[j-1]+= np.random.binomial(1,Pk[j-1]==Pk[Tnn-1])
     #print(PPkn)
-    NknS2.insert(i-1,PPkn.copy())
-    
+    NknS2.append(PPkn.copy())
+#print(NknS2)
+
 for i in range (1,N+1):
     for j in range (1,K+1):
         if(j==Tn[i-1]):
             Ykn[i-1][j-1]=Xt[i-1]
-            #print(Ykn)
-print(NknS2)
 
-#Nkn[j-1]+= np.random.binomial(1,Pk[j-1]==Pk[Tnn-1])  #number of use of all treatments on n
-#for i in range (1,N+1):
-#   for j in range (1,K+1):
-#       NknS2[i-1][j-1]+= np.random.binomial(1,Pk[j-1]==Pk[Tn-1])  
+#print(Ykn)
 
-#for i in range (K+1,N+1):
-#   for j in range (1,K+1):
-#      PknS2[i-1][j-1]=Ykn[i-1][j-1]/ NknS2[i-1][j-1]
+
+
+def Sum(L,k,n):
+    sumCol=0
+    for i in range(0,n):
+        sumCol=sumCol + L[i][k]
+    return sumCol
+
+
+for i in range (K+1,N+1):
+    
+    for j in range (1,K+1):
+        sum=Sum(Ykn,j-1,i-1)
+        PknS2[i-1][j-1]=round(sum / NknS2[i-1][j-1],3)
+print(NknS2[N-1])
+print("==============================")
+print("==============================")
+print("==============================")
+
+print(PknS2[N-1])    
+
+
+
+
+#print(PknS2)
