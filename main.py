@@ -127,4 +127,34 @@ plt.show()
 """
 
 #Treatment of strat 3 : 
- #calcul de P(K,n )
+ #calcul de P(K,n)
+PPkn=[0 for i in range (K)]
+PknS2=[[0 for i in range(K)] for i in range (N)] 
+for i in range (1,N+1):
+    if(i<K+1):  
+        Tnn=i  
+        Tn.append(Tnn) 
+        Xn=np.random.binomial(1,Pk[i-1])  #Bernoulli law
+        Xt.append(Xn)  #list of efficiency{0,1}
+    else:
+        Tnn=Stats.randint.rvs(1,K+1)  #Uniform law
+        Tn.append(Tnn)
+        Xn=np.random.binomial(1,Pk[Tnn-1])  #Bernoulli law
+        Xt.append(Xn)  #list of efficiency{0,1}
+    for j in range (1,K+1):
+        if(j==Tnn):
+            PPkn[j-1]+= np.random.binomial(1,Pk[j-1]==Pk[Tnn-1])
+    NknS2.append(PPkn.copy())
+
+
+for i in range (1,N+1):
+    for j in range (1,K+1):
+        if(j==Tn[i-1]):
+            Ykn[i-1][j-1]=Xt[i-1]
+
+for i in range (K+1,N+1):
+    for j in range (1,K+1):
+        sum=Sum(Ykn,j-1,i-1)
+        PknS2[i-1][j-1]=round(sum / NknS2[i-1][j-1],3)
+
+
