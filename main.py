@@ -1,4 +1,5 @@
 from logging.config import listen
+import math
 from scipy import stats as Stats
 import numpy as np
 from matplotlib import pyplot as plt
@@ -43,27 +44,28 @@ def Sum(L,k,n): #sum of the firt n element of the column L[K] (L is a list of li
     return sumCol
 
 #Initialisation
-N=1000 #number of patients
+N=100 #number of patients
 Pk=[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.75] #probability of each treatement
 K=len(Pk) #number or treatement used
-Xt=[] #table of Xn
+Xn=[] #table of Xt
 Tn=[] #table of treatment given to each patient
 Nkn=K*[0] #value of Nkn at n
 NknS2=[] 
+NknS3=[] 
 Ykn= [[0 for i in range(K)] for i in range (N)] 
 """
 #Treatment of strat 1 : 
 for i in range (1,N+1):
     Tnn=Stats.randint.rvs(1,K+1)  #Uniform law
     Tn.append(Tnn)
-    Xn=np.random.binomial(1,Pk[Tnn-1])  #Bernoulli law
-    Xt.append(Xn)  #list of efficiency{0,1} 
+    Xt=np.random.binomial(1,Pk[Tnn-1])  #Bernoulli law
+    Xn.append(Xt)  #list of efficiency{0,1} 
     for j in range (1,K+1):
         Nkn[j-1]+= np.random.binomial(1,Pk[j-1]==Pk[Tnn-1])  #number of use of all treatments on n
 TE=[] #efficiency of all treatment after use 
 Use=numberOfUse(Tn)
 for i in range(N):
-    TE.append(Xt[i]*Tn[i])
+    TE.append(Xn[i]*Tn[i])
 
 #Graphe of Strat 1 
 for i in Use.keys():
@@ -76,7 +78,7 @@ plt.ylabel('Ratio')
 plt.xlabel('Traitement')
 plt.grid()
 plt.show()
-Ex=np.mean(Xt)
+Ex=np.mean(Xn)
 print(ratio)
 
 
@@ -89,13 +91,13 @@ for i in range (1,N+1):
     if(i<K+1):  
         Tnn=i  
         Tn.append(Tnn) 
-        Xn=np.random.binomial(1,Pk[i-1])  #Bernoulli law
-        Xt.append(Xn)  #list of efficiency{0,1}
+        Xt=np.random.binomial(1,Pk[i-1])  #Bernoulli law
+        Xn.append(Xt)  #list of efficiency{0,1}
     else:
         Tnn=Stats.randint.rvs(1,K+1)  #Uniform law
         Tn.append(Tnn)
-        Xn=np.random.binomial(1,Pk[Tnn-1])  #Bernoulli law
-        Xt.append(Xn)  #list of efficiency{0,1}
+        Xt=np.random.binomial(1,Pk[Tnn-1])  #Bernoulli law
+        Xn.append(Xt)  #list of efficiency{0,1}
     for j in range (1,K+1):
         if(j==Tnn):
             PPkn[j-1]+= np.random.binomial(1,Pk[j-1]==Pk[Tnn-1])
@@ -105,7 +107,7 @@ for i in range (1,N+1):
 for i in range (1,N+1):
     for j in range (1,K+1):
         if(j==Tn[i-1]):
-            Ykn[i-1][j-1]=Xt[i-1]
+            Ykn[i-1][j-1]=Xn[i-1]
 
 for i in range (K+1,N+1):
     for j in range (1,K+1):
@@ -127,34 +129,81 @@ plt.show()
 """
 
 #Treatment of strat 3 : 
- #calcul de P(K,n)
+ #calcul de P(K,n )
+
 PPkn=[0 for i in range (K)]
-PknS2=[[0 for i in range(K)] for i in range (N)] 
+PknS3=[[0 for i in range(K)] for i in range (N)] 
+Allintervals=[[[0,0] for i in range(K)] for i in range (N)] 
+
 for i in range (1,N+1):
     if(i<K+1):  
         Tnn=i  
         Tn.append(Tnn) 
-        Xn=np.random.binomial(1,Pk[i-1])  #Bernoulli law
-        Xt.append(Xn)  #list of efficiency{0,1}
+        Xt=np.random.binomial(1,Pk[i-1])  #Bernoulli law
+        Xn.append(Xt)  #list of efficiency{0,1}
     else:
         Tnn=Stats.randint.rvs(1,K+1)  #Uniform law
         Tn.append(Tnn)
-        Xn=np.random.binomial(1,Pk[Tnn-1])  #Bernoulli law
-        Xt.append(Xn)  #list of efficiency{0,1}
+        Xt=np.random.binomial(1,Pk[Tnn-1])  #Bernoulli law
+        Xn.append(Xt)  #list of efficiency{0,1}
     for j in range (1,K+1):
         if(j==Tnn):
             PPkn[j-1]+= np.random.binomial(1,Pk[j-1]==Pk[Tnn-1])
-    NknS2.append(PPkn.copy())
+    NknS3.append(PPkn.copy())
 
 
 for i in range (1,N+1):
     for j in range (1,K+1):
         if(j==Tn[i-1]):
-            Ykn[i-1][j-1]=Xt[i-1]
+            Ykn[i-1][j-1]=Xn[i-1]
 
 for i in range (K+1,N+1):
     for j in range (1,K+1):
         sum=Sum(Ykn,j-1,i-1)
-        PknS2[i-1][j-1]=round(sum / NknS2[i-1][j-1],3)
+        PknS3[i-1][j-1]=round(sum / NknS3[i-1][j-1],3)
+
+#calculating the interval elements
+def Beta(k,n):
+    return(math.sqrt(2*(math.log(n))/NknS3[n-1][k-1]))
+
+#print(PknS3)
+interval=[]
+supinterval=[[0 for i in range(K)] for i in range (N)] 
+for i in range (K+1,N+1):
+    for j in range (1,K+1):
+        beta=Beta(j,i)
+        inf=round(PknS3[i-1][j-1]-beta,3)
+        interval.append(inf)
+        sup=round(PknS3[i-1][j-1]+beta,3)
+        interval.append(sup)
+        supinterval[i-1][j-1]=sup
+        Allintervals[i-1][j-1][0]=inf     
+        Allintervals[i-1][j-1][1]=sup
+
+#print(supinterval)
+kmaxlist=[0 for i in range (N)]
+for i in range (K+1,N+1):
+        kmax=supinterval[i-1].index(max(supinterval[i-1]))+1
+        kmaxlist[i-1]=kmax
+
+print(kmaxlist)
+print("==========================")
+print("==========================")
+
+print("==========================")
+
+print("==========================")
+
+print("==========================")
+print("==========================")
+
+print("==========================")
+
+print("==========================")
+
+print(Allintervals)
+    
+        
+
 
 
