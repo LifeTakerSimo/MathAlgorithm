@@ -44,7 +44,7 @@ def Sum(L,k,n): #sum of the firt n element of the column L[K] (L is a list of li
     return sumCol
 
 #Initialisation
-N=100 #number of patients
+N=1000 #number of patients
 Pk=[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.75] #probability of each treatement
 K=len(Pk) #number or treatement used
 Xn=[] #table of Xt
@@ -66,7 +66,6 @@ TE=[] #efficiency of all treatment after use
 Use=numberOfUse(Tn)
 for i in range(N):
     TE.append(Xn[i]*Tn[i])
-
 #Graphe of Strat 1 
 for i in Use.keys():
     if (not(i in Eff)):
@@ -80,13 +79,10 @@ plt.grid()
 plt.show()
 Ex=np.mean(Xn)
 print(ratio)
-
-
 #Treatment of strat 2 : 
 numberOfMax=[0 for k in range(K)]
 PPkn=[0 for i in range (K)]
 PknS2=[[0 for i in range(K)] for i in range (N)] 
-
 for i in range (1,N+1):
     if(i<K+1):  
         Tnn=i  
@@ -102,24 +98,19 @@ for i in range (1,N+1):
         if(j==Tnn):
             PPkn[j-1]+= np.random.binomial(1,Pk[j-1]==Pk[Tnn-1])
     NknS2.append(PPkn.copy())
-
-
 for i in range (1,N+1):
     for j in range (1,K+1):
         if(j==Tn[i-1]):
             Ykn[i-1][j-1]=Xn[i-1]
-
 for i in range (K+1,N+1):
     for j in range (1,K+1):
         sum=Sum(Ykn,j-1,i-1)
         PknS2[i-1][j-1]=round(sum / NknS2[i-1][j-1],3)
-
 #Graphe of strat 2
 for i in range (K+1,N+1):
     for j in range(1,K+1):
         if max(PknS2[i-1])==PknS2[i-1][j-1]:
             numberOfMax[j-1]+=1
-
 plt.bar([i for i in range(1,11)],numberOfMax,0.5) 
 plt.title("",fontsize=15)
 plt.ylabel('Nombre de fois ou Pkn est maximal')
@@ -127,7 +118,7 @@ plt.xlabel('Traitement')
 plt.grid()
 plt.show()
 
-
+"""
 #Treatment of strat 3 : 
  #calcul de P(K,n )
 
@@ -185,11 +176,21 @@ for i in range (K+1,N+1):
         kmaxlist[i-1]=kmax
 
 print(kmaxlist)
-print(Allintervals)
-    
-"""  
+ax = plt.axes(projection='3d')
+
+# Data for a three-dimensional line
+for i in range(K+1,N+1):
+    for j in range(1,K+1):
+        if(j==kmaxlist[i-1]):
+            xline = [i,i]
+            yline=[j,j]
+            zline = [Allintervals[i-1][j-1][0],Allintervals[i-1][j-1][1]]
+            ax.plot3D(xline, yline, zline, 'gray')
+plt.show()
+
 
 
 
 #Treatment of strat 3 : 
 #modelisation of 'loi  à priori'
+        
