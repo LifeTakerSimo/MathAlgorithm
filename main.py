@@ -177,7 +177,7 @@ for i in range (K+1,N+1):
 
 print(kmaxlist)
 ax = plt.axes(projection='3d')
-
+color=['blue','red','yellow','grey','purple','green','magenta','brown','black','orange']
 # Data for a three-dimensional line
 for i in range(K+1,N+1):
     for j in range(1,K+1):
@@ -185,12 +185,16 @@ for i in range(K+1,N+1):
             xline = [i,i]
             yline=[j,j]
             zline = [Allintervals[i-1][j-1][0],Allintervals[i-1][j-1][1]]
-            ax.plot3D(xline, yline, zline, 'gray')
+            ax.plot3D(xline, yline, zline, color[j-1])
+ax.set_xlabel('N')
+ax.set_ylabel('Traitement')
+ax.set_zlabel('Intervalle de confiance')
+ax.set_title('Stratégie 3')
 plt.show()
+
 
 
 
 
 #Treatment of strat 3 : 
 #modelisation of 'loi  à priori'
-        
