@@ -1,6 +1,6 @@
 from logging.config import listen
 import math
-from scipy import stats as Stats
+from scipy import stats as stats
 import numpy as np
 from matplotlib import pyplot as plt
 
@@ -56,7 +56,7 @@ Ykn= [[0 for i in range(K)] for i in range (N)]
 """
 #Treatment of strat 1 : 
 for i in range (1,N+1):
-    Tnn=Stats.randint.rvs(1,K+1)  #Uniform law
+    Tnn=stats.randint.rvs(1,K+1)  #Uniform law
     Tn.append(Tnn)
     Xt=np.random.binomial(1,Pk[Tnn-1])  #Bernoulli law
     Xn.append(Xt)  #list of efficiency{0,1} 
@@ -94,7 +94,7 @@ for i in range (1,N+1):
         Xt=np.random.binomial(1,Pk[i-1])  #Bernoulli law
         Xn.append(Xt)  #list of efficiency{0,1}
     else:
-        Tnn=Stats.randint.rvs(1,K+1)  #Uniform law
+        Tnn=stats.randint.rvs(1,K+1)  #Uniform law
         Tn.append(Tnn)
         Xt=np.random.binomial(1,Pk[Tnn-1])  #Bernoulli law
         Xn.append(Xt)  #list of efficiency{0,1}
@@ -126,7 +126,7 @@ plt.ylabel('Nombre de fois ou Pkn est maximal')
 plt.xlabel('Traitement')
 plt.grid()
 plt.show()
-"""
+
 
 #Treatment of strat 3 : 
  #calcul de P(K,n )
@@ -142,7 +142,7 @@ for i in range (1,N+1):
         Xt=np.random.binomial(1,Pk[i-1])  #Bernoulli law
         Xn.append(Xt)  #list of efficiency{0,1}
     else:
-        Tnn=Stats.randint.rvs(1,K+1)  #Uniform law
+        Tnn=stats.randint.rvs(1,K+1)  #Uniform law
         Tn.append(Tnn)
         Xt=np.random.binomial(1,Pk[Tnn-1])  #Bernoulli law
         Xn.append(Xt)  #list of efficiency{0,1}
@@ -179,31 +179,17 @@ for i in range (K+1,N+1):
         supinterval[i-1][j-1]=sup
         Allintervals[i-1][j-1][0]=inf     
         Allintervals[i-1][j-1][1]=sup
-
-#print(supinterval)
 kmaxlist=[0 for i in range (N)]
 for i in range (K+1,N+1):
         kmax=supinterval[i-1].index(max(supinterval[i-1]))+1
         kmaxlist[i-1]=kmax
 
 print(kmaxlist)
-print("==========================")
-print("==========================")
-
-print("==========================")
-
-print("==========================")
-
-print("==========================")
-print("==========================")
-
-print("==========================")
-
-print("==========================")
-
 print(Allintervals)
     
-        
+"""  
 
 
 
+#Treatment of strat 3 : 
+#modelisation of 'loi  à priori'
