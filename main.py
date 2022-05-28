@@ -66,6 +66,8 @@ TE=[] #efficiency of all treatment after use
 Use=numberOfUse(Tn)
 for i in range(N):
     TE.append(Xn[i]*Tn[i])
+
+
 #Graphe of Strat 1 
 for i in Use.keys():
     if (not(i in Eff)):
@@ -79,6 +81,8 @@ plt.grid()
 plt.show()
 Ex=np.mean(Xn)
 print(ratio)
+
+
 #Treatment of strat 2 : 
 numberOfMax=[0 for k in range(K)]
 PPkn=[0 for i in range (K)]
@@ -106,6 +110,9 @@ for i in range (K+1,N+1):
     for j in range (1,K+1):
         sum=Sum(Ykn,j-1,i-1)
         PknS2[i-1][j-1]=round(sum / NknS2[i-1][j-1],3)
+
+
+
 #Graphe of strat 2
 for i in range (K+1,N+1):
     for j in range(1,K+1):
@@ -118,7 +125,7 @@ plt.xlabel('Traitement')
 plt.grid()
 plt.show()
 
-"""
+
 #Treatment of strat 3 : 
  #calcul de P(K,n )
 
@@ -157,7 +164,6 @@ for i in range (K+1,N+1):
 def Beta(k,n):
     return(math.sqrt(2*(math.log(n))/NknS3[n-1][k-1]))
 
-#print(PknS3)
 interval=[]
 supinterval=[[0 for i in range(K)] for i in range (N)] 
 for i in range (K+1,N+1):
@@ -174,8 +180,9 @@ kmaxlist=[0 for i in range (N)]
 for i in range (K+1,N+1):
         kmax=supinterval[i-1].index(max(supinterval[i-1]))+1
         kmaxlist[i-1]=kmax
+#print(kmaxlist)
 
-print(kmaxlist)
+#Graphe for Strat 3 : 
 ax = plt.axes(projection='3d')
 color=['blue','red','yellow','grey','purple','green','magenta','brown','black','orange']
 # Data for a three-dimensional line
@@ -191,10 +198,11 @@ ax.set_ylabel('Traitement')
 ax.set_zlabel('Intervalle de confiance')
 ax.set_title('Stratégie 3')
 plt.show()
+"""
 
-
-
-
-
-#Treatment of strat 3 : 
+#Treatment of strat 4 : 
 #modelisation of 'loi  à priori'
+PknS4=[] 
+for i in range(1,N+1):
+    PknS4.append(Pk1=stats.beta(a=1, b=1))  #law of Beta 
+print(PknS4)
