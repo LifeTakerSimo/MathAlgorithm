@@ -44,7 +44,7 @@ def Sum(L,k,n): #sum of the firt n element of the column L[K] (L is a list of li
     return sumCol
 
 #Initialisation
-N=20 #number of patients
+N=100 #number of patients
 Pk=[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.75] #probability of each treatement
 K=len(Pk) #number or treatement used
 Xn=[] #table of Xt
@@ -66,8 +66,6 @@ TE=[] #efficiency of all treatment after use
 Use=numberOfUse(Tn)
 for i in range(N):
     TE.append(Xn[i]*Tn[i])
-
-
 #Graphe of Strat 1 
 for i in Use.keys():
     if (not(i in Eff)):
@@ -81,8 +79,6 @@ plt.grid()
 plt.show()
 Ex=np.mean(Xn)
 print(ratio)
-
-
 #Treatment of strat 2 : 
 numberOfMax=[0 for k in range(K)]
 PPkn=[0 for i in range (K)]
@@ -110,9 +106,6 @@ for i in range (K+1,N+1):
     for j in range (1,K+1):
         sum=Sum(Ykn,j-1,i-1)
         PknS2[i-1][j-1]=round(sum / NknS2[i-1][j-1],3)
-
-
-
 #Graphe of strat 2
 for i in range (K+1,N+1):
     for j in range(1,K+1):
@@ -124,15 +117,11 @@ plt.ylabel('Nombre de fois ou Pkn est maximal')
 plt.xlabel('Traitement')
 plt.grid()
 plt.show()
-
-
 #Treatment of strat 3 : 
  #calcul de P(K,n )
-
 PPkn=[0 for i in range (K)]
 PknS3=[[0 for i in range(K)] for i in range (N)] 
 Allintervals=[[[0,0] for i in range(K)] for i in range (N)] 
-
 for i in range (1,N+1):
     if(i<K+1):  
         Tnn=i  
@@ -148,22 +137,17 @@ for i in range (1,N+1):
         if(j==Tnn):
             PPkn[j-1]+= np.random.binomial(1,Pk[j-1]==Pk[Tnn-1])
     NknS3.append(PPkn.copy())
-
-
 for i in range (1,N+1):
     for j in range (1,K+1):
         if(j==Tn[i-1]):
             Ykn[i-1][j-1]=Xn[i-1]
-
 for i in range (K+1,N+1):
     for j in range (1,K+1):
         sum=Sum(Ykn,j-1,i-1)
         PknS3[i-1][j-1]=round(sum / NknS3[i-1][j-1],3)
-
 #calculating the interval elements
 def Beta(k,n):
     return(math.sqrt(2*(math.log(n))/NknS3[n-1][k-1]))
-
 interval=[]
 supinterval=[[0 for i in range(K)] for i in range (N)] 
 for i in range (K+1,N+1):
@@ -181,7 +165,6 @@ for i in range (K+1,N+1):
         kmax=supinterval[i-1].index(max(supinterval[i-1]))+1
         kmaxlist[i-1]=kmax
 #print(kmaxlist)
-
 #Graphe for Strat 3 : 
 ax = plt.axes(projection='3d')
 color=['blue','red','yellow','grey','purple','green','magenta','brown','black','orange']
@@ -230,4 +213,17 @@ for i in range(2,N+1):
             b=1+NknS4[i-1][j-1]-Sum(Ykn,j-1,i-1)
             PknS4[i-1][j-1]=stats.beta.rvs(a,b)
 
-print(PknS4)
+PknMax=[0 for i in range(N)]
+for i in range(1,N+1):
+    PknMax[i-1]=PknS4[i-1].index(max(PknS4[i-1]))+1
+
+ax = plt.axes(projection='3d')
+color=['red','orange','yellow','green','blue','purple','pink','lime','gray','brown']
+# Data for a three-dimensional line
+for i in range(1,N+1):
+    for j in range(1,K+1):
+        if(j==PknMax[i-1]):
+            xline = [i,i]
+            yline=[j,j]
+            zline = [0,PknS4[i-1][j-1]]
+            ax.plot3D(xline, yline, zline, color[j-1])
