@@ -222,15 +222,12 @@ for i in range (1,N+1):
             Ykn[i-1][j-1]=Xn[i-1]
 
 for j in range(1,K+1):
-            PknS4[0][j-1]=stats.beta(a=1, b=1) #law of Beta 
+            PknS4[0][j-1]=stats.beta.rvs(a=1, b=1) #law of Beta 
 
 for i in range(2,N+1):
     for j in range(1,K+1):
             a=1+Sum(Ykn,j-1,i-1)
             b=1+NknS4[i-1][j-1]-Sum(Ykn,j-1,i-1)
-            PknS4[i-1][j-1]=stats.beta(a,b)
+            PknS4[i-1][j-1]=stats.beta.rvs(a,b)
 
-
-x=np.linspace(1,N,N)
-plt.plot(x,PknS4)
-plt.show()
+print(PknS4)
