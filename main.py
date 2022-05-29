@@ -202,7 +202,31 @@ plt.show()
 
 #Treatment of strat 4 : 
 #modelisation of 'loi  à priori'
-PknS4=[] 
+PknS4=[[0 for i in range(K)] for i in range (N)] 
+NknS4=[] 
+PPknS4=[]
+# calcule de somme de Yk,i 
+
+for i in range (1,N+1):
+    Tnn=stats.randint.rvs(1,K+1)  #Uniform law
+    Tn.append(Tnn)
+    Xt=np.random.binomial(1,Pk[Tnn-1])  #Bernoulli law
+    Xn.append(Xt)  #list of efficiency{0,1} 
+    for j in range (1,K+1):
+        if(j==Tnn):
+            PPknS4[j-1]+= np.random.binomial(1,Pk[j-1]==Pk[Tnn-1])
+    NknS3.append(PPknS4.copy())
+for i in range (1,N+1):
+    for j in range (1,K+1):
+        if(j==Tn[i-1]):
+            Ykn[i-1][j-1]=Xn[i-1]
+
 for i in range(1,N+1):
-    PknS4.append(Pk1=stats.beta(a=1, b=1))  #law of Beta 
+    for j in range(1,K+1):
+        if(i==1):
+            PknS4[i][j-1]=stats.beta(a=1, b=1) #law of Beta 
+        else:
+            a=1+Sum(Ykn,j-1,i-1)
+            b=1-Sum(Ykn,j-1,i-1)+Nkn[j-1]
+            PknS4[i-1][j-1]=stats.beta(a,b)
 print(PknS4)
