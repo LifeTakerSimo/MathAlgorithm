@@ -44,7 +44,7 @@ def Sum(L,k,n): #sum of the firt n element of the column L[K] (L is a list of li
     return sumCol
 
 #Initialisation
-N=100 #number of patients
+N=1000 #number of patients
 Pk=[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.75] #probability of each treatement
 K=len(Pk) #number or treatement used
 Xn=[] #table of Xt
@@ -181,7 +181,7 @@ ax.set_ylabel('Traitement')
 ax.set_zlabel('Intervalle de confiance')
 ax.set_title('Stratégie 3')
 plt.show()
-"""
+
 
 #Treatment of strat 4 : 
 #modelisation of 'loi  à priori'
@@ -227,3 +227,5 @@ for i in range(1,N+1):
             yline=[j,j]
             zline = [0,PknS4[i-1][j-1]]
             ax.plot3D(xline, yline, zline, color[j-1])
+plt.show()
+"""
