@@ -44,7 +44,7 @@ def Sum(L,k,n): #sum of the firt n element of the column L[K] (L is a list of li
     return sumCol
 
 #Initialisation
-N=1000 #number of patients
+N=20 #number of patients
 Pk=[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.75] #probability of each treatement
 K=len(Pk) #number or treatement used
 Xn=[] #table of Xt
@@ -204,29 +204,33 @@ plt.show()
 #modelisation of 'loi  à priori'
 PknS4=[[0 for i in range(K)] for i in range (N)] 
 NknS4=[] 
-PPknS4=[]
+PPknS4=[0 for i in range (K)]
 # calcule de somme de Yk,i 
-
 for i in range (1,N+1):
     Tnn=stats.randint.rvs(1,K+1)  #Uniform law
     Tn.append(Tnn)
     Xt=np.random.binomial(1,Pk[Tnn-1])  #Bernoulli law
-    Xn.append(Xt)  #list of efficiency{0,1} 
+    Xn.append(Xt)  #list of efficiency{0,1}
     for j in range (1,K+1):
         if(j==Tnn):
             PPknS4[j-1]+= np.random.binomial(1,Pk[j-1]==Pk[Tnn-1])
-    NknS3.append(PPknS4.copy())
+    NknS4.append(PPknS4.copy())
+
 for i in range (1,N+1):
     for j in range (1,K+1):
         if(j==Tn[i-1]):
             Ykn[i-1][j-1]=Xn[i-1]
 
-for i in range(1,N+1):
+for j in range(1,K+1):
+            PknS4[0][j-1]=stats.beta(a=1, b=1) #law of Beta 
+
+for i in range(2,N+1):
     for j in range(1,K+1):
-        if(i==1):
-            PknS4[i][j-1]=stats.beta(a=1, b=1) #law of Beta 
-        else:
             a=1+Sum(Ykn,j-1,i-1)
-            b=1-Sum(Ykn,j-1,i-1)+Nkn[j-1]
+            b=1+NknS4[i-1][j-1]-Sum(Ykn,j-1,i-1)
             PknS4[i-1][j-1]=stats.beta(a,b)
-print(PknS4)
+
+
+x=np.linspace(1,N,N)
+plt.plot(x,PknS4)
+plt.show()
