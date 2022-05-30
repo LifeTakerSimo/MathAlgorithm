@@ -99,7 +99,71 @@ def Strategie2():
     plt.xlabel('Traitement')
     plt.grid()
     plt.show()
+"""
+#Graphe for Strat 3 : 
+ax = plt.axes(projection='3d')
+color=['blue','red','yellow','grey','purple','green','magenta','brown','black','orange']
+# Data for a three-dimensional line
+for i in range(K+1,N+1):
+    for j in range(1,K+1):
+        if(j==kmaxlist[i-1]):
+            xline = [i,i]
+            yline=[j,j]
+            zline = [Allintervals[i-1][j-1][0],Allintervals[i-1][j-1][1]]
+            ax.plot3D(xline, yline, zline, color[j-1])
+ax.set_xlabel('N')
+ax.set_ylabel('Traitement')
+ax.set_zlabel('Intervalle de confiance')
+ax.set_title('Stratégie 3')
+plt.show()
 
+
+#Treatment of strat 4 : 
+#modelisation of 'loi  à priori'
+
+PknS4=[[0 for i in range(K)] for i in range (N)] 
+NknS4=[] 
+PPknS4=[0 for i in range (K)]
+# calcule de somme de Yk,i 
+for i in range (1,N+1):
+    Tnn=stats.randint.rvs(1,K+1)  #Uniform law
+    Tn.append(Tnn)
+    Xt=np.random.binomial(1,Pk[Tnn-1])  #Bernoulli law
+    Xn.append(Xt)  #list of efficiency{0,1}
+    for j in range (1,K+1):
+        if(j==Tnn):
+            PPknS4[j-1]+= np.random.binomial(1,Pk[j-1]==Pk[Tnn-1])
+    NknS4.append(PPknS4.copy())
+
+for i in range (1,N+1):
+    for j in range (1,K+1):
+        if(j==Tn[i-1]):
+            Ykn[i-1][j-1]=Xn[i-1]
+
+for j in range(1,K+1):
+            PknS4[0][j-1]=stats.beta.rvs(a=1, b=1) #law of Beta 
+
+for i in range(2,N+1):
+    for j in range(1,K+1):
+            a=1+Sum(Ykn,j-1,i-1)
+            b=1+NknS4[i-1][j-1]-Sum(Ykn,j-1,i-1)
+            PknS4[i-1][j-1]=stats.beta.rvs(a,b)
+
+PknMax=[0 for i in range(N)]
+for i in range(1,N+1):
+    PknMax[i-1]=PknS4[i-1].index(max(PknS4[i-1]))+1
+
+ax = plt.axes(projection='3d')
+color=['red','orange','yellow','green','blue','purple','pink','lime','gray','brown']
+# Data for a three-dimensional line
+for i in range(1,N+1):
+    for j in range(1,K+1):
+        if(j==PknMax[i-1]):
+            xline = [i,i]
+            yline=[j,j]
+            zline = [0,PknS4[i-1][j-1]]
+            ax.plot3D(xline, yline, zline, color[j-1])
+"""
 
 while(False):
     print("Entre le numéro de la stratégie à choisir:\n1- Statégie 1\n2- Stratégie 2\n3- Stratégie 3\n4- Stratégie4\n")
