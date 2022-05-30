@@ -107,5 +107,6 @@ while(False):
     if(choice=="1"):
         initialisation()
         Strategie1()
-initialisation()
-Strategie2()
+    if(choice=="2"):
+        initialisation()
+        Strategie2()
