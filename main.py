@@ -2,14 +2,18 @@ from scipy import stats as stats
 import numpy as np
 from matplotlib import pyplot as plt
 
+
+
+2
 def initialisation():
-    global N,Pk,K,Xn,Tn,Nkn,Nkn,Ykn
+    global N,Pk,K,Xn,Tn,Nkn,Nkn,Ykn,NknS2
     N=1000 #number of patients
     Pk=[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.75] #probability of each treatement
     K=len(Pk) #number or treatement used
     Xn=[] #table of Xt
     Tn=[] #table of treatment given to each patient
     Nkn=K*[0] #value of Nkn at n
+    NknS2=[]
     Ykn= [[0 for i in range(K)] for i in range (N)] 
 # Count the number of use of each element 
 def numberOfUse(L):
@@ -99,6 +103,17 @@ def Strategie2():
     plt.xlabel('Traitement')
     plt.grid()
     plt.show()
+
+while(True):
+    print("Entre le numéro de la stratégie à choisir:\n1- Statégie 1\n2- Stratégie 2\n3- Stratégie 3\n4- Stratégie4\n")
+    choice=input()
+    if(choice=="1"):
+        initialisation()
+        Strategie1()
+    if(choice=="2"):
+        initialisation()
+        Strategie2()
+
 """
 #Graphe for Strat 3 : 
 ax = plt.axes(projection='3d')
@@ -165,12 +180,4 @@ for i in range(1,N+1):
             ax.plot3D(xline, yline, zline, color[j-1])
 """
 
-while(False):
-    print("Entre le numéro de la stratégie à choisir:\n1- Statégie 1\n2- Stratégie 2\n3- Stratégie 3\n4- Stratégie4\n")
-    choice=input()
-    if(choice=="1"):
-        initialisation()
-        Strategie1()
-    if(choice=="2"):
-        initialisation()
-        Strategie2()
+
