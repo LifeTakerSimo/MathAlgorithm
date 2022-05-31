@@ -1,12 +1,11 @@
-from scipy import stats as stats
+from logging.config import listen
+import math
+from scipy import stats as Stats
 import numpy as np
 from matplotlib import pyplot as plt
 
-
-
-2
 def initialisation():
-    global N,Pk,K,Xn,Tn,Nkn,Nkn,Ykn,NknS2
+    global N,Pk,K,Xn,Tn,Nkn,Nkn,Ykn,NknS2,NknS3,PknS4
     N=1000 #number of patients
     Pk=[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.75] #probability of each treatement
     K=len(Pk) #number or treatement used
@@ -14,6 +13,9 @@ def initialisation():
     Tn=[] #table of treatment given to each patient
     Nkn=K*[0] #value of Nkn at n
     NknS2=[]
+    NknS3=[]
+    NknS4=[]
+    PknS4=[[0 for i in range(K)] for i in range (N)] 
     Ykn= [[0 for i in range(K)] for i in range (N)] 
 # Count the number of use of each element 
 def numberOfUse(L):
@@ -36,7 +38,7 @@ def Sum(L,k,n): #sum of the firt n element of the column L[K] (L is a list of li
 
 def Strategie1():
     for i in range (1,N+1):
-        Tnn=stats.randint.rvs(1,K+1)  #Uniform law
+        Tnn=Stats.randint.rvs(1,K+1)  #Uniform law
         Tn.append(Tnn)
         Xt=np.random.binomial(1,Pk[Tnn-1])  #Bernoulli law
         Xn.append(Xt)  #list of efficiency{0,1} 
@@ -63,7 +65,6 @@ def Strategie1():
     plt.grid()
     plt.show()
     Ex=np.mean(Xn)
-    print(ratio)
 
 def Strategie2(): 
     numberOfMax=[0 for k in range(K)]
@@ -76,7 +77,7 @@ def Strategie2():
             Xt=np.random.binomial(1,Pk[i-1])  #Bernoulli law
             Xn.append(Xt)  #list of efficiency{0,1}
         else:
-            Tnn=stats.randint.rvs(1,K+1)  #Uniform law
+            Tnn=Stats.randint.rvs(1,K+1)  #Uniform law
             Tn.append(Tnn)
             Xt=np.random.binomial(1,Pk[Tnn-1])  #Bernoulli law
             Xn.append(Xt)  #list of efficiency{0,1}
@@ -104,80 +105,141 @@ def Strategie2():
     plt.grid()
     plt.show()
 
+def Strategie3():
+    
+    PPkn=[0 for i in range (K)]
+    PknS3=[[0 for i in range(K)] for i in range (N)] 
+    Allintervals=[[[0,0] for i in range(K)] for i in range (N)] 
+    
+    for i in range (1,N+1):
+        if(i<K+1):  
+            Tnn=i  
+            Tn.append(Tnn) 
+            Xt=np.random.binomial(1,Pk[i-1])  #Bernoulli law
+            Xn.append(Xt)  #list of efficiency{0,1}
+        else:
+            Tnn=Stats.randint.rvs(1,K+1)  #Uniform law
+            Tn.append(Tnn)
+            Xt=np.random.binomial(1,Pk[Tnn-1])  #Bernoulli law
+            Xn.append(Xt)  #list of efficiency{0,1}
+        for j in range (1,K+1):
+            if(j==Tnn):
+                PPkn[j-1]+= np.random.binomial(1,Pk[j-1]==Pk[Tnn-1])
+        NknS3.append(PPkn.copy())
+    
+    
+    for i in range (1,N+1):
+        for j in range (1,K+1):
+            if(j==Tn[i-1]):
+                Ykn[i-1][j-1]=Xn[i-1]
+    
+    for i in range (K+1,N+1):
+        for j in range (1,K+1):
+            sum=Sum(Ykn,j-1,i-1)
+            PknS3[i-1][j-1]=round(sum / NknS3[i-1][j-1],3)
+    
+    #calculating the interval elements
+    def Beta(k,n):
+        return(math.sqrt(2*(math.log(n))/NknS3[n-1][k-1]))
+    
+    #print(PknS3)
+    interval=[]
+    supinterval=[[0 for i in range(K)] for i in range (N)] 
+    for i in range (K+1,N+1):
+        for j in range (1,K+1):
+            beta=Beta(j,i)
+            inf=round(PknS3[i-1][j-1]-beta,3)
+            interval.append(inf)
+            sup=round(PknS3[i-1][j-1]+beta,3)
+            interval.append(sup)
+            supinterval[i-1][j-1]=sup
+            Allintervals[i-1][j-1][0]=inf     
+            Allintervals[i-1][j-1][1]=sup
+    
+    #print(supinterval)
+    kmaxlist=[0 for i in range (N)]
+    for i in range (K+1,N+1):
+            kmax=supinterval[i-1].index(max(supinterval[i-1]))+1
+            kmaxlist[i-1]=kmax
+            
+    ax = plt.axes(projection='3d')
+    color=['blue','red','yellow','grey','purple','green','magenta','brown','black','orange']
+    # Data for a three-dimensional line
+    for i in range(K+1,N+1):
+        for j in range(1,K+1):
+            if(j==kmaxlist[i-1]):
+                xline = [i,i]
+                yline=[j,j]
+                zline = [Allintervals[i-1][j-1][0],Allintervals[i-1][j-1][1]]
+                Top=[i-0.5,i+0.5]
+                ax.plot3D(xline, yline, zline, color[j-1])
+                ax.plot3D(Top, yline, zline, color[j-1])
+    ax.set_xlabel('N')
+    ax.set_ylabel('Traitement')
+    ax.set_zlabel('Intervalle de confiance')
+    ax.set_title('Stratégie 3')
+    plt.show()
+    
+def Strategie4():
+
+    PknS4=[[0 for i in range(K)] for i in range (N)] 
+    NknS4=[] 
+    PPknS4=[0 for i in range (K)]
+
+# calcule de somme de Yk,i 
+    for i in range (1,N+1):
+        Tnn=Stats.randint.rvs(1,K+1)  #Uniform law
+        Tn.append(Tnn)
+        Xt=np.random.binomial(1,Pk[Tnn-1])  #Bernoulli law
+        Xn.append(Xt)  #list of efficiency{0,1}
+        
+        for j in range (1,K+1):
+            if(j==Tnn):
+                PPknS4[j-1]+= np.random.binomial(1,Pk[j-1]==Pk[Tnn-1])
+        NknS4.append(PPknS4.copy())
+    for i in range (1,N+1):
+        for j in range (1,K+1):
+            if(j==Tn[i-1]):
+                Ykn[i-1][j-1]=Xn[i-1]
+    for j in range(1,K+1):
+                PknS4[0][j-1]=Stats.beta.rvs(a=1, b=1) #law of Beta 
+    for i in range(2,N+1):
+        for j in range(1,K+1):
+                a=1+Sum(Ykn,j-1,i-1)
+                b=1+NknS4[i-1][j-1]-Sum(Ykn,j-1,i-1)
+                PknS4[i-1][j-1]=Stats.beta.rvs(a,b)
+    PknMax=[0 for i in range(N)]
+    for i in range(1,N+1):
+        PknMax[i-1]=PknS4[i-1].index(max(PknS4[i-1]))+1
+    ax = plt.axes(projection='3d')
+    color=['red','orange','yellow','green','blue','purple','pink','lime','gray','brown']
+    # Data for a three-dimensional line
+    for i in range(1,N+1):
+        for j in range(1,K+1):
+            if(j==PknMax[i-1]):
+                xline = [i,i]
+                yline=[j,j]
+                zline = [0,PknS4[i-1][j-1]]
+                ax.plot3D(xline, yline, zline, color[j-1])
 while(True):
-    print("Entre le numéro de la stratégie à choisir:\n1- Statégie 1\n2- Stratégie 2\n3- Stratégie 3\n4- Stratégie4\n")
+    print("Entre le numéro de la stratégie à choisir:\n1- Statégie 1\n2- Stratégie 2\n3- Stratégie 3\n4- Stratégie 4\n5- Exit\n")
     choice=input()
     if(choice=="1"):
         initialisation()
         Strategie1()
-    if(choice=="2"):
-        initialisation()
-        Strategie2()
-
-"""
-#Graphe for Strat 3 : 
-ax = plt.axes(projection='3d')
-color=['blue','red','yellow','grey','purple','green','magenta','brown','black','orange']
-# Data for a three-dimensional line
-for i in range(K+1,N+1):
-    for j in range(1,K+1):
-        if(j==kmaxlist[i-1]):
-            xline = [i,i]
-            yline=[j,j]
-            zline = [Allintervals[i-1][j-1][0],Allintervals[i-1][j-1][1]]
-            ax.plot3D(xline, yline, zline, color[j-1])
-ax.set_xlabel('N')
-ax.set_ylabel('Traitement')
-ax.set_zlabel('Intervalle de confiance')
-ax.set_title('Stratégie 3')
-plt.show()
-
-
-#Treatment of strat 4 : 
-#modelisation of 'loi  à priori'
-
-PknS4=[[0 for i in range(K)] for i in range (N)] 
-NknS4=[] 
-PPknS4=[0 for i in range (K)]
-# calcule de somme de Yk,i 
-for i in range (1,N+1):
-    Tnn=stats.randint.rvs(1,K+1)  #Uniform law
-    Tn.append(Tnn)
-    Xt=np.random.binomial(1,Pk[Tnn-1])  #Bernoulli law
-    Xn.append(Xt)  #list of efficiency{0,1}
-    for j in range (1,K+1):
-        if(j==Tnn):
-            PPknS4[j-1]+= np.random.binomial(1,Pk[j-1]==Pk[Tnn-1])
-    NknS4.append(PPknS4.copy())
-
-for i in range (1,N+1):
-    for j in range (1,K+1):
-        if(j==Tn[i-1]):
-            Ykn[i-1][j-1]=Xn[i-1]
-
-for j in range(1,K+1):
-            PknS4[0][j-1]=stats.beta.rvs(a=1, b=1) #law of Beta 
-
-for i in range(2,N+1):
-    for j in range(1,K+1):
-            a=1+Sum(Ykn,j-1,i-1)
-            b=1+NknS4[i-1][j-1]-Sum(Ykn,j-1,i-1)
-            PknS4[i-1][j-1]=stats.beta.rvs(a,b)
-
-PknMax=[0 for i in range(N)]
-for i in range(1,N+1):
-    PknMax[i-1]=PknS4[i-1].index(max(PknS4[i-1]))+1
-
-ax = plt.axes(projection='3d')
-color=['red','orange','yellow','green','blue','purple','pink','lime','gray','brown']
-# Data for a three-dimensional line
-for i in range(1,N+1):
-    for j in range(1,K+1):
-        if(j==PknMax[i-1]):
-            xline = [i,i]
-            yline=[j,j]
-            zline = [0,PknS4[i-1][j-1]]
-            ax.plot3D(xline, yline, zline, color[j-1])
-"""
-
-
+    else:
+        if(choice=="2"):
+            initialisation()
+            Strategie2()
+        else:
+            if(choice=="3"):
+                initialisation()
+                Strategie3()
+            else:
+                if(choice=="4"):
+                    initialisation()
+                    Strategie4()
+                else:
+                    if(choice=="5"):
+                        break;
+    
