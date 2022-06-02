@@ -1,22 +1,23 @@
-from logging.config import listen
 import math
 from scipy import stats as Stats
 import numpy as np
 from matplotlib import pyplot as plt
 
 def initialisation():
-    global N,Pk,K,Xn,Tn,Nkn,Nkn,Ykn,NknS2,NknS3,PknS4
-    N=1000 #number of patients
+    global N,Pk,K,Xn,Tn,Nkn,Ykn,NknS2,NknS3,NknS4,PPkn,Pkn,Allintervals
+    N=100 #number of patients
     Pk=[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.75] #probability of each treatement
     K=len(Pk) #number or treatement used
     Xn=[] #table of Xt
     Tn=[] #table of treatment given to each patient
     Nkn=K*[0] #value of Nkn at n
+    Ykn= [[0 for i in range(K)] for i in range (N)]
     NknS2=[]
     NknS3=[]
     NknS4=[]
-    PknS4=[[0 for i in range(K)] for i in range (N)] 
-    Ykn= [[0 for i in range(K)] for i in range (N)] 
+    Pkn=[[0 for i in range(K)] for i in range (N)] 
+    PPkn=[0 for i in range (K)] 
+    Allintervals=[[[0,0] for i in range(K)] for i in range (N)] 
 # Count the number of use of each element 
 def numberOfUse(L):
     occurrences = {}
@@ -47,10 +48,9 @@ def Strategie1():
     TE=[] #efficiency of all treatment after use 
     for i in range(0,N):
         TE.append(Xn[i]*Tn[i])
-        
     Use=numberOfUse(Tn)
     Eff=numberOfUse(TE)
-    ratio=[]
+    ratio=[] #nombre d'efficacité/nombre d'utilisation
     for i in range(N):
         TE.append(Xn[i]*Tn[i])
     #Graphe of Strat 1 
@@ -60,7 +60,7 @@ def Strategie1():
         ratio.append(round(Eff[i]/Use[i],2))
     plt.bar(list(Eff.keys()),ratio,0.5,color='blue') #add numbers from 1 / 10 
     plt.title("Graphe de l'efficacité par rapport à l'utilisation de chaque traitement",fontsize=15)
-    plt.ylabel('Ratio')
+    plt.ylabel("Ratio = Efficacité / Utilisation")
     plt.xlabel('Traitement')
     plt.grid()
     plt.show()
@@ -68,8 +68,6 @@ def Strategie1():
 
 def Strategie2(): 
     numberOfMax=[0 for k in range(K)]
-    PPkn=[0 for i in range (K)]
-    PknS2=[[0 for i in range(K)] for i in range (N)] 
     for i in range (1,N+1):
         if(i<K+1):  
             Tnn=i  
@@ -92,11 +90,11 @@ def Strategie2():
     for i in range (K+1,N+1):
         for j in range (1,K+1):
             sum=Sum(Ykn,j-1,i-1)
-            PknS2[i-1][j-1]=round(sum / NknS2[i-1][j-1],3)
+            Pkn[i-1][j-1]=round(sum / NknS2[i-1][j-1],3)
     #Graphe of strat 2
     for i in range (K+1,N+1):
         for j in range(1,K+1):
-            if max(PknS2[i-1])==PknS2[i-1][j-1]:
+            if max(Pkn[i-1])==Pkn[i-1][j-1]:
                 numberOfMax[j-1]+=1
     plt.bar([i for i in range(1,11)],numberOfMax,0.5) 
     plt.title("",fontsize=15)
@@ -104,13 +102,9 @@ def Strategie2():
     plt.xlabel('Traitement')
     plt.grid()
     plt.show()
-
+    
 def Strategie3():
-    
-    PPkn=[0 for i in range (K)]
-    PknS3=[[0 for i in range(K)] for i in range (N)] 
-    Allintervals=[[[0,0] for i in range(K)] for i in range (N)] 
-    
+
     for i in range (1,N+1):
         if(i<K+1):  
             Tnn=i  
@@ -136,21 +130,21 @@ def Strategie3():
     for i in range (K+1,N+1):
         for j in range (1,K+1):
             sum=Sum(Ykn,j-1,i-1)
-            PknS3[i-1][j-1]=round(sum / NknS3[i-1][j-1],3)
+            Pkn[i-1][j-1]=round(sum / NknS3[i-1][j-1],3)
     
     #calculating the interval elements
     def Beta(k,n):
         return(math.sqrt(2*(math.log(n))/NknS3[n-1][k-1]))
     
-    #print(PknS3)
+    #print(Pkn)
     interval=[]
     supinterval=[[0 for i in range(K)] for i in range (N)] 
     for i in range (K+1,N+1):
         for j in range (1,K+1):
             beta=Beta(j,i)
-            inf=round(PknS3[i-1][j-1]-beta,3)
+            inf=round(Pkn[i-1][j-1]-beta,3)
             interval.append(inf)
-            sup=round(PknS3[i-1][j-1]+beta,3)
+            sup=round(Pkn[i-1][j-1]+beta,3)
             interval.append(sup)
             supinterval[i-1][j-1]=sup
             Allintervals[i-1][j-1][0]=inf     
@@ -181,11 +175,7 @@ def Strategie3():
     plt.show()
     
 def Strategie4():
-
-    PknS4=[[0 for i in range(K)] for i in range (N)] 
-    NknS4=[] 
-    PPknS4=[0 for i in range (K)]
-
+    
 # calcule de somme de Yk,i 
     for i in range (1,N+1):
         Tnn=Stats.randint.rvs(1,K+1)  #Uniform law
@@ -195,22 +185,22 @@ def Strategie4():
         
         for j in range (1,K+1):
             if(j==Tnn):
-                PPknS4[j-1]+= np.random.binomial(1,Pk[j-1]==Pk[Tnn-1])
-        NknS4.append(PPknS4.copy())
+                PPkn[j-1]+= np.random.binomial(1,Pk[j-1]==Pk[Tnn-1])
+        NknS4.append(PPkn.copy())
     for i in range (1,N+1):
         for j in range (1,K+1):
             if(j==Tn[i-1]):
                 Ykn[i-1][j-1]=Xn[i-1]
     for j in range(1,K+1):
-                PknS4[0][j-1]=Stats.beta.rvs(a=1, b=1) #law of Beta 
+                Pkn[0][j-1]=Stats.beta.rvs(a=1, b=1) #law of Beta 
     for i in range(2,N+1):
         for j in range(1,K+1):
                 a=1+Sum(Ykn,j-1,i-1)
                 b=1+NknS4[i-1][j-1]-Sum(Ykn,j-1,i-1)
-                PknS4[i-1][j-1]=Stats.beta.rvs(a,b)
+                Pkn[i-1][j-1]=Stats.beta.rvs(a,b)
     PknMax=[0 for i in range(N)]
     for i in range(1,N+1):
-        PknMax[i-1]=PknS4[i-1].index(max(PknS4[i-1]))+1
+        PknMax[i-1]=Pkn[i-1].index(max(Pkn[i-1]))+1
     ax = plt.axes(projection='3d')
     color=['red','orange','yellow','green','blue','purple','pink','lime','gray','brown']
     # Data for a three-dimensional line
@@ -219,8 +209,31 @@ def Strategie4():
             if(j==PknMax[i-1]):
                 xline = [i,i]
                 yline=[j,j]
-                zline = [0,PknS4[i-1][j-1]]
+                zline = [0,Pkn[i-1][j-1]]
                 ax.plot3D(xline, yline, zline, color[j-1])
+    ax.set_xlabel('Instant n')
+    ax.set_ylabel('Traitement k')
+    ax.set_zlabel('Pk,n')
+    ax.set_title('Stratégie 4')
+    plt.show()
+    
+# def Strategie5():
+    # k=1
+    # TU=[ i for i in range(0,10)]
+    # TE=[]
+    # print(Tn)
+    # while(len(TU)!=1):
+    #     for i in range(1,K+1):
+    #         for j in range(0,math.floor(N/K)):
+    #             Tn.append(k)
+    #         k+=1
+    #     for i in range(1,N+1):
+    #         Xt=np.random.binomial(1,Pk[Tn[i-1]-1])  #Bernoulli law
+    #         TE.append(Xt*Tn[i-1])
+    #     Eff=numberOfUse(TE)
+    #     for i in range(1,N+1):
+    #         if(Eff[i]==min(Eff)):
+    #             TU.pop(Eff[i])
 while(True):
     print("Entre le numéro de la stratégie à choisir:\n1- Statégie 1\n2- Stratégie 2\n3- Stratégie 3\n4- Stratégie 4\n5- Exit\n")
     choice=input()
@@ -241,5 +254,6 @@ while(True):
                     Strategie4()
                 else:
                     if(choice=="5"):
-                        break;
+                        initialisation()
+                        Strategie5()
     
