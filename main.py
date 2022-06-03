@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 
 def initialisation():
     global N,Pk,K,Xn,Tn,Nkn,Ykn,NknS2,NknS3,NknS4,PPkn,Pkn,Allintervals
-    N=100 #number of patients
+    N=1000 #number of patients
     Pk=[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.75] #probability of each treatement
     K=len(Pk) #number or treatement used
     Xn=[] #table of Xt
@@ -58,6 +58,7 @@ def Strategie1():
         if (not(i in Eff)):
             Eff[i]=0
         ratio.append(round(Eff[i]/Use[i],2))
+"""
     plt.bar(list(Eff.keys()),ratio,0.5,color='blue') #add numbers from 1 / 10 
     plt.title("Graphe de l'efficacité par rapport à l'utilisation de chaque traitement",fontsize=15)
     plt.ylabel("Ratio = Efficacité / Utilisation")
@@ -65,7 +66,7 @@ def Strategie1():
     plt.grid()
     plt.show()
     Ex=np.mean(Xn)
-
+"""
 def Strategie2(): 
     numberOfMax=[0 for k in range(K)]
     for i in range (1,N+1):
@@ -96,13 +97,16 @@ def Strategie2():
         for j in range(1,K+1):
             if max(Pkn[i-1])==Pkn[i-1][j-1]:
                 numberOfMax[j-1]+=1
+
+    """
     plt.bar([i for i in range(1,11)],numberOfMax,0.5) 
     plt.title("",fontsize=15)
     plt.ylabel('Nombre de fois ou Pkn est maximal')
     plt.xlabel('Traitement')
     plt.grid()
     plt.show()
-    
+    """
+   
 def Strategie3():
 
     for i in range (1,N+1):
@@ -155,7 +159,7 @@ def Strategie3():
     for i in range (K+1,N+1):
             kmax=supinterval[i-1].index(max(supinterval[i-1]))+1
             kmaxlist[i-1]=kmax
-            
+    """
     ax = plt.axes(projection='3d')
     color=['blue','red','yellow','grey','purple','green','magenta','brown','black','orange']
     # Data for a three-dimensional line
@@ -173,6 +177,7 @@ def Strategie3():
     ax.set_zlabel('Intervalle de confiance')
     ax.set_title('Stratégie 3')
     plt.show()
+    """
     
 def Strategie4():
     
@@ -201,6 +206,7 @@ def Strategie4():
     PknMax=[0 for i in range(N)]
     for i in range(1,N+1):
         PknMax[i-1]=Pkn[i-1].index(max(Pkn[i-1]))+1
+"""
     ax = plt.axes(projection='3d')
     color=['red','orange','yellow','green','blue','purple','pink','lime','gray','brown']
     # Data for a three-dimensional line
@@ -216,7 +222,7 @@ def Strategie4():
     ax.set_zlabel('Pk,n')
     ax.set_title('Stratégie 4')
     plt.show()
-    
+"""
 # def Strategie5():
     # k=1
     # TU=[ i for i in range(0,10)]
